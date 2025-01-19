@@ -10,7 +10,7 @@ def get_training_data(mode):
         b = float(0)
         return xi, yi, w, b
     else:
-        td = pd.read_csv("training_data.csv")
+        td = pd.read_csv("data.csv")
         tds = td.head(10)
         xi = tds['Square_Footage'].to_numpy(dtype='float')
         yi = tds['Price'].to_numpy(dtype='float')
