@@ -1,20 +1,35 @@
-# %%
 import pandas as pd
-import matplotlib.pyplot as plt
+import numpy as np
+import math
 
-# %%
+def get_training_data(mode):
+    if mode == 0:
+        xi = np.array([1, 2], dtype='float')
+        yi = np.array([300, 500], dtype='float')
+        w = float(0)
+        b = float(0)
+        return xi, yi, w, b
+    else:
+        td = pd.read_csv("training_data.csv")
+        tds = td.head(10)
+        xi = tds['Square_Footage'].to_numpy(dtype='float')
+        yi = tds['Price'].to_numpy(dtype='float')
+        w = float(1500)
+        b = float(350000)
+        return xi, yi, w, b
+
 def compute_cost(x, y, w, b):
     m = x.shape[0]
     cost = float(0)
     for i in range(m):
         y_hat = (w * x[i]) + b
-        cost += (y_hat - y[i]) ** 2
+        diff = (y_hat - y[i])
+        cost += (diff * diff)
     cost = cost / (2 * m)
     return cost
 
-# %%
+
 def compute_gradient(x, y, w, b):
-    breakpoint()
     m = x.shape[0]
     dj_dw = dj_db = float(0)
     for i in range(m):
@@ -25,48 +40,23 @@ def compute_gradient(x, y, w, b):
         dj_db += dj_db_i
     dj_dw = dj_dw / m
     dj_db = dj_db / m
-    print(f"m = {m}, dj_dw = {dj_dw}")
-    print(f"dj_db = {dj_db}")
     return dj_dw, dj_db
 
-# %%
-td = pd.read_csv("training_data.csv")
-tds = td.head(10)
-xi = tds['Square_Footage'].to_numpy(dtype='float')
-yi = tds['Price'].to_numpy(dtype='float')
-print(f"xi = {xi}")
-print(f"yi = {yi}")
-print(f"m = {xi.shape[0]}")
+if __name__ == "__main__":
+    xi, yi, w, b = get_training_data(0)
+    
+    print(f"xi = {xi}")
+    print(f"yi = {yi}")
+    print(f"m = {xi.shape[0]}")
+    print(f"w = {w}")
+    print(f"b = {b}")
 
-# %%
-plt.plot(xi, yi, label='Price vs Square Footage')
-plt.title("Price Estimation - Training data")
-plt.xlabel("Square Footage")
-plt.ylabel("Price (in $)")
-plt.grid()
-plt.show()
-
-# %%
-w = b = float(0)
-EPOCH = 100
-alpha = 0.01
-wbs = list()
-jwbs = list()
-for i in range(1, EPOCH + 1):
-    dj_dw, dj_db = compute_gradient(xi, yi, w, b)
-    w = w - (alpha * dj_dw)
-    b = b - (alpha * dj_db)
-    cost = compute_cost(xi, yi, w, b)
-    wbs.append((w, b))
-    jwbs.append(cost)
-    if i % 1000 == 0:
-        print(f"At end of iteration {i} :: Cost is {cost} :: Model parameters are {(w, b)}")
-
-# %%
-plt.plot(wbs, jwbs, label="Cost vs model parameters")
-plt.xlabel("Model parameters - (w, b)")
-plt.ylabel("Cost function for linear regression")
-plt.grid()
-plt.show()
-
-
+    EPOCH = 10000
+    alpha = 0.01
+    for i in range(1, EPOCH + 1):
+        dj_dw, dj_db = compute_gradient(xi, yi, w, b)
+        w = w - (alpha * dj_dw)
+        b = b - (alpha * dj_db)
+        cost = compute_cost(xi, yi, w, b)
+        if i % (math.floor(EPOCH / 10)) == 0:
+            print(f"Iteration {i} :: Cost = {cost} :: dj_dw = {dj_dw} :: dj_db = {dj_db} :: w = {float(w)} :: b = {float(b)}")
