@@ -27,17 +27,10 @@ which python
 This should point to the python executable inside the virtual environment. Once this activation is done, install the following dependencies:
 
 ```bash
-# numpy package for working with matrices
-pip install numpy
-
-# matplotlib for creating graphs and charts
-pip install matplotlib
-
-# For algebraic expressions and differential equations.
-pip install sympy
+pip install -r requirements.txt
 ```
 
-To deactivate the virtual environment, run the below command.
+The file `requirements.txt` contains all the direct dependencies and their version. To deactivate the virtual environment, run the below command.
 
 ```bash
 deactivate
