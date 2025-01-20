@@ -5,3 +5,5 @@ include
 lib
 share
 pyvenv.cfg
+Playground
+__pycache__

@@ -5,12 +5,6 @@ To run the python scripts present in this repository, the following must be inst
 - Python (>= 3.12) or higher
 - `pip` (package manager for python)
 
-## Contents
-
-- `./Homeworks` --> Directory that contains all the homeworks for CSEN-240 Machine learning course.
-
-- `./Playground` --> Directory that contains work related to the machine learning online course being taken in Coursera.
-
 ## Virtual Environment
 
 To run the project locally, setup a virtual environment on the home directory of the project. To create a `venv` in python, run the following command.
@@ -33,17 +27,10 @@ which python
 This should point to the python executable inside the virtual environment. Once this activation is done, install the following dependencies:
 
 ```bash
-# numpy package for working with matrices
-pip install numpy
-
-# matplotlib for creating graphs and charts
-pip install matplotlib
-
-# For algebraic expressions and differential equations.
-pip install sympy
+pip install -r requirements.txt
 ```
 
-To deactivate the virtual environment, run the below command.
+The file `requirements.txt` contains all the direct dependencies and their version. To deactivate the virtual environment, run the below command.
 
 ```bash
 deactivate
