@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import math
 
 class DataProcessing:
@@ -27,12 +28,20 @@ class DataProcessing:
         self.validation_data['area'] = self.validation_data['area'] / 1000
         self.validation_data['price'] = self.validation_data['price'] / 1000000
     
-    def get_training_data(self):
+    def get_training_data(self, model):
         """
         Function that returns the feature and target values for training the machine learning model.
+        :param model: The model name for which the feature and target values are required.
         :returns: tuple (ndarray object of feature values, ndarray object of target values)
         """
         self.clean_data()
-        xi = self.training_data['area'].to_numpy(dtype='float')
-        yi = self.training_data['price'].to_numpy(dtype='float')
-        return xi, yi
+        if model.strip() == "ML_HP_SF":
+            xi = self.training_data['area'].to_numpy(dtype='float')
+            yi = self.training_data['price'].to_numpy(dtype='float')
+            return xi, yi
+        else:
+            yi = self.training_data['price'].to_numpy(dtype='float')
+            xi = np.column_stack((self.training_data['area'].to_numpy(dtype='float'), self.training_data['bedrooms'].to_numpy(dtype='float')))
+            xi = np.column_stack((xi, self.training_data['bathrooms'].to_numpy(dtype='float')))
+            xi = np.column_stack((xi, self.training_data['stories'].to_numpy(dtype='float')))
+            return xi, yi
