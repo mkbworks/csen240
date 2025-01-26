@@ -6,42 +6,47 @@ class DataProcessing:
     """
     Class to fetch data from .csv file, clean and transform them into the desired format.
     """
-    def __init__(self):
+    def __init__(self, op_col, *ip_cols):
         """
-        Constructor to create a new instance of 'DataProcessing'. The first 80% of rows are allotted as training data and the rest 20% are allotted as validation data.
+        Fetches data from the CSV file, extracts the training data (80% of total data available), and parses the input features and output values as an instance of DataProcessing class.
+        :param op_col: a string value containing the name of the output column in the CSV file.
+        :param *ip_cols: a list of strings representing all the input features in the CSV file.
         """
         df = pd.read_csv("housing.csv", parse_dates=True)
         total_rows = df.shape[0]
-        training_rows = math.ceil(0.8 * total_rows)
-        self.training_data = df[:training_rows]
-        self.validation_data = df[training_rows:]
-    
-    def clean_data(self):
+        self.train_rowc = math.ceil(0.8 * total_rows)
+        trd = df[:self.train_rowc]
+        self.yi = trd[op_col].to_numpy(dtype='float')
+        if len(ip_cols) == 1:
+            self.xi = trd[ip_cols[0]].to_numpy(dtype='float')
+        elif len(ip_cols) > 1:
+            cols = []
+            for i in range(len(ip_cols)):
+                cols.append(trd[ip_cols[i]].to_numpy(dtype='float'))
+            self.xi = np.column_stack(tuple(cols))
+        
+    def normalize_features(self):
         """
-        Function to clean the training and validation data to remove unwanted columns and change values to a format suitable for training the machine learning model.
-        :returns: no value(s).
+            Normalizes the input features using z-score normalization.
+            :returns: a ndarray containing the normalized feature values.
         """
-        self.training_data['area'] = self.training_data['area'] / 1000
-        self.training_data['price'] = self.training_data['price'] / 1000000
-
-        # Clean price and square footage values for validation data
-        self.validation_data['area'] = self.validation_data['area'] / 1000
-        self.validation_data['price'] = self.validation_data['price'] / 1000000
-    
-    def get_training_data(self, model):
-        """
-        Function that returns the feature and target values for training the machine learning model.
-        :param model: The model name for which the feature and target values are required.
-        :returns: tuple (ndarray object of feature values, ndarray object of target values)
-        """
-        self.clean_data()
-        if model.strip() == "ML_HP_SF":
-            xi = self.training_data['area'].to_numpy(dtype='float')
-            yi = self.training_data['price'].to_numpy(dtype='float')
-            return xi, yi
+        if self.xi.ndim == 1:
+            xi_mean = np.mean(self.xi)
+            xi_std = np.std(self.xi)
+            xi_nm = (self.xi - xi_mean) / xi_std
+            return xi_nm
         else:
-            yi = self.training_data['price'].to_numpy(dtype='float')
-            xi = np.column_stack((self.training_data['area'].to_numpy(dtype='float'), self.training_data['bedrooms'].to_numpy(dtype='float')))
-            xi = np.column_stack((xi, self.training_data['bathrooms'].to_numpy(dtype='float')))
-            xi = np.column_stack((xi, self.training_data['stories'].to_numpy(dtype='float')))
-            return xi, yi
+            mean_values = np.mean(self.xi, axis=0)
+            std_values = np.std(self.xi, axis=0)
+            xi_nm = (self.xi - mean_values) / std_values
+            return xi_nm
+    
+    def normalize_targets(self):
+        """
+            Normalizes the output target values using z-score normalization.
+            :returns:  a ndarray containing the normalized target values.
+        """
+        yi_mean = np.mean(self.yi)
+        yi_std = np.std(self.yi)
+        yi_nm = (self.yi - yi_mean) / yi_std
+        return yi_nm
