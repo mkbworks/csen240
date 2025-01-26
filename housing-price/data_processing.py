@@ -36,15 +36,9 @@ class DataProcessing:
             xi_nm = (self.xi - xi_mean) / xi_std
             return xi_nm
         else:
-            n_cols = self.xi.shape[1]
-            cols = []
-            for i in range(n_cols):
-                t_col = self.xi[:i]
-                xi_mean = np.mean(t_col)
-                xi_std = np.std(t_col)
-                t_col_i = (t_col - xi_mean) / xi_std
-                cols.append(t_col_i)
-            xi_nm = np.column_stack(tuple(cols))
+            mean_values = np.mean(self.xi, axis=0)
+            std_values = np.std(self.xi, axis=0)
+            xi_nm = (self.xi - mean_values) / std_values
             return xi_nm
     
     def normalize_targets(self):
