@@ -40,13 +40,3 @@ class DataProcessing:
             std_values = np.std(self.xi, axis=0)
             xi_nm = (self.xi - mean_values) / std_values
             return xi_nm
-    
-    def normalize_targets(self):
-        """
-            Normalizes the output target values using z-score normalization.
-            :returns:  a ndarray containing the normalized target values.
-        """
-        yi_mean = np.mean(self.yi)
-        yi_std = np.std(self.yi)
-        yi_nm = (self.yi - yi_mean) / yi_std
-        return yi_nm
