@@ -8,3 +8,5 @@ pyvenv.cfg
 Playground
 __pycache__
 csen-240
+playground.py
+etc

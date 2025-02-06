@@ -7,7 +7,7 @@ To run the python scripts present in this repository, the following must be inst
 
 ## Virtual Environment
 
-To run the project locally, setup a virtual environment on the home directory of the project. To create a `venv` in python, run the following command.
+To run the project locally, set up a virtual environment on the home directory of the project. To create a `venv` in python, run the following command.
 
 ```bash
 chmod +x venv.sh
