@@ -60,6 +60,7 @@ class LinearRegression:
         returns: a list of all the cost values computed for every epoch.
         """
         n = x.shape[1]
+        np.random.seed(20)
         w = np.random.randn(n, 1)
         b = np.random.randn()
         cost_values = []
@@ -89,7 +90,7 @@ class LinearRegression:
 
     def predict(self, x):
         """
-        Computes the predicted target values for the given samples.
+        Computes the predicted target values for the given samples with the minmized model parameters.
         x - (m x n) matrix representing the sample values.
         returns: (m x 1) matrix containing the predicted target values.
         """
