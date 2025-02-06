@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cwd = $(pwd)
+cwd=$(pwd)
 
 # Below command creates a new virtual environment in the current working directory.
 python -m venv "$cwd"
