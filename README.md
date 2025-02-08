@@ -29,7 +29,7 @@ deactivate
 
 This notebook file estimates the price of a house based on the area of the house (measured in sq ft). It employs univariate linear regression model to train and predict the target values.
 
-- The input values are regularized using L2 (Lasso) regularization to avoid overfitting.
+- The input values are regularized using L2 (Ridge) regularization to avoid overfitting.
 - It uses `batch gradient descent` algorithm to minimise the model's empirical loss and find the corresponding model parameters.
 
 ### housing_price_multivariate.ipynb
@@ -45,4 +45,4 @@ This notebook file predicts the price of a house based on multiple factors namel
 - If it has a guestroom, air conditioning, basement, hot water heating
 - Furnishing status
 
-It employs multivariate linear regression model to make predictions with lasso regularized inputs.
+It employs multivariate linear regression model to make predictions with ridge regularized inputs.

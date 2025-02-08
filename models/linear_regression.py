@@ -69,6 +69,17 @@ class LinearRegression:
                 self.w_final = np.copy(w)
         return cost_values
 
+    def train_ols(self, x, y):
+        """
+        Trains the linear regression model using the closed form solutions and determines the best value of the model parameters.
+        x - (m x n) matrix containing all the training samples. Each row represents a training sample.
+        y - (m x 1) matrix containg the target values for the training samples.
+        returns: None
+        """
+        xtx = np.dot(x.T, x)
+        xtxinv = np.linalg.inv(xtx)
+        self.w_final = np.linalg.multi_dot([xtxinv, x.T, y])
+
     def validate(self, x, y):
         """
         Validates the model using the given validation feature, target values and the finalized model parameters.
@@ -90,10 +101,10 @@ class LinearRegression:
 
     def r2_score(self, x, y):
         """
-        Computes the R-squared score for the given samples with the minmized model parameters.
+        Computes the adjusted R-2 score for the given samples with the minmized model parameters.
         x - (m x n) matrix representing the sample values.
         y - (m x 1) matrix containg the target values for the samples.
-        returns: scalar value between 0 and 1, indicating how well the model predicts the target values.
+        returns: scalar value between 0 and 1, indicating how well the model predicts the target values. Higher the value, the better.
         """
         m, n = x.shape
         y_hat = self.predict(x)
