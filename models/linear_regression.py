@@ -1,11 +1,10 @@
-import copy
 import numpy as np
 
-"""
-Class containing methods to create and train a linear regression model with 'n' features and 'm' training samples.
-"""
 class LinearRegression:
-    def __init__(self, alpha, epochs, lambda_r):
+    """
+    Class containing methods to create and train a linear regression model with 'n' features and 'm' training samples.
+    """
+    def __init__(self, alpha = 0, epochs = 0, lambda_r = None):
         """
         Instantiate a new instance of linear regression model by providing the following parameters:
         alpha - the learning rate of the model.
@@ -29,7 +28,9 @@ class LinearRegression:
         y_hat = np.dot(x, w)
         cost = np.mean(np.square(y_hat - y))
         cost = cost / 2
-        cost = cost + ((self.lambda_r / 2) * np.mean(np.square(w)))
+        if self.lambda_r is not None:
+            cost = cost + ((self.lambda_r / 2) * np.mean(np.square(w)))
+
         return cost
 
     def compute_gradient(self, x, y, w):
@@ -45,7 +46,11 @@ class LinearRegression:
         m = x.shape[0]
         y_hat = np.dot(x, w)
         diff = y_hat - y
-        dj_dw = ((1 / m) * np.dot(x.T, diff)) + ((self.lambda_r / m) * w)
+        if self.lambda_r is not None:
+            dj_dw = ((1 / m) * np.dot(x.T, diff)) + ((self.lambda_r / m) * w)
+        else:
+            dj_dw = (1 / m) * np.dot(x.T, diff)
+
         return dj_dw
 
     def train_gd(self, x, y):
@@ -79,6 +84,7 @@ class LinearRegression:
         xtx = np.dot(x.T, x)
         xtxinv = np.linalg.inv(xtx)
         self.w_final = np.linalg.multi_dot([xtxinv, x.T, y])
+        self.cost_final = self.compute_cost(x, y, self.w_final)
 
     def validate(self, x, y):
         """
@@ -87,8 +93,7 @@ class LinearRegression:
         y - (m x 1) matrix containg the target values for the validation samples.
         returns: a scalar value denoting the average loss for the validation dataset.
         """
-        w = np.copy(self.w_final)
-        cst = self.compute_cost(x, y, w)
+        cst = self.compute_cost(x, y, self.w_final)
         return cst
 
     def predict(self, x):
@@ -101,16 +106,26 @@ class LinearRegression:
 
     def r2_score(self, x, y):
         """
-        Computes the adjusted R-2 score for the given samples with the minmized model parameters.
+        Computes the R-2 score for the given samples with the minmized model parameters.
         x - (m x n) matrix representing the sample values.
         y - (m x 1) matrix containg the target values for the samples.
         returns: scalar value between 0 and 1, indicating how well the model predicts the target values. Higher the value, the better.
         """
-        m, n = x.shape
         y_hat = self.predict(x)
         y_mean = np.mean(y)
         ss_res = np.sum(np.square(y - y_hat))
         ss_tot = np.sum(np.square(y - y_mean))
         r2_score = 1 - (ss_res / ss_tot)
-        r2_adj = 1 - (((1 - (r2_score ** 2)) * (m - 1))/ (m - n - 1))
+        return r2_score
+
+    def adjusted_r2_score(self, x, y):
+        """
+        Computes the adjusted R-2 score for the given samples with the minmized model parameters.
+        x - (m x n) matrix representing the sample values.
+        y - (m x 1) matrix containg the target values for the samples.
+        returns: scalar value indicating how well the model predicts the target values. Higher the value, the better.
+        """
+        m, n = x.shape
+        r2_score = self.r2_score(x, y)
+        r2_adj = 1 - (((1 - (r2_score ** 2)) * (m - 1)) / (m - n - 1))
         return r2_adj
